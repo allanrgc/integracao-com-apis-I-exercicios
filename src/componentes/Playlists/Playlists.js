@@ -1,31 +1,42 @@
-import React, {  useState } from "react";
+import React, {  useEffect ,useState } from "react";
 import Musicas from "../Musicas/Musicas";
+import axios from "axios";
 
-const playlistsLocal = [
-    {
-        id: 1,
-        name: "Playlist 1"
-    },
-    {
-        id: 2,
-        name: "Playlist 2"
-    },
-    {
-        id: 3,
-        name: "Playlist 3"
-    },
-    {
-        id: 4,
-        name: "Playlist 4"
-    },
-]
 function Playlists() {
-    const [playlists, setPlaylists] = useState(playlistsLocal)
+    const [playlists, setPlaylists] = useState([])
+
+    const headers = {
+        headers: {
+          Authorization: "allan-rafael-conway"
+        }
+      };
+      const recebePlaylists = (props) => {
+        axios
+          .get(
+            "https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists",
+            headers
+          )
+          .then((resposta) => {
+            setPlaylists(resposta.data.result.list);
+          })
+          .catch((erro) => {
+            // alert("deu ruim");
+            alert(erro.response.data);
+            console.log(erro.response.data);
+          });
+      };
+      useEffect(() => {
+        recebePlaylists();
+      }, []);
   
     return (
         <div>
             {playlists.map((playlist) => {
-                return <Musicas key={playlist.id} playlist={playlist}/>
+                return <Musicas 
+                key={playlist.id} 
+                playlist={playlist}
+                
+                />
             })}
 
         </div>
